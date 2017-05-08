@@ -2,8 +2,6 @@
 
 # coding: utf-8
 
-# In[24]:
-
 import requests
 import json
 from urllib.parse import urlencode
@@ -12,13 +10,9 @@ import sys
 from tabulate import tabulate
 
 
-# In[2]:
-
 API_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 API_VELOV_URL = "https://download.data.grandlyon.com/ws/rdata/jcd_jcdecaux.jcdvelov/all.json"
 
-
-# In[21]:
 
 def getPostion(address):
     param = { 'address':address}
@@ -27,13 +21,9 @@ def getPostion(address):
     return float(location['lat']),float(location['lng'])
 
 
-# In[12]:
-
 def get_stations():
     return json.loads(requests.get(API_VELOV_URL).text)["values"]
 
-
-# In[13]:
 
 def add_distance(stations, pos):
     for s in stations:
@@ -41,13 +31,9 @@ def add_distance(stations, pos):
         s["distance"] = haversine(pos, pos_station)
 
 
-# In[14]:
-
 def sort_stations(stations):
     return sorted(stations, key=lambda x: x["distance"])
 
-
-# In[15]:
 
 def get_closest_stations(address):
     stations = get_stations()
@@ -55,24 +41,12 @@ def get_closest_stations(address):
     return sort_stations(stations)[:10]
 
 
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[25]:
-
 def main():
     address = sys.argv[1]
     stations = get_closest_stations(address)
     res = []
     for s in stations:
-        res.appen([s["address"],s["available_bikes"],s["available_bike_stands"]])
+        res.append([s["address"],s["available_bikes"],s["available_bike_stands"]])
         #print("{} - {} - {}".format(s["address"],s["available_bikes"],s["available_bike_stands"]))
     print(tabulate(res, headers=("Adresse","Vélos libres","Places restantes")))
 
